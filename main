@@ -1,0 +1,623 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Exunys-ESP/main/src/ESP.lua"))()
+
+--ExunysDeveloperESP.Load()
+
+local repo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
+
+local lib = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+local DrawingFonts = Drawing.Fonts
+
+local Window = lib:CreateWindow({
+    Title = "WallFriend | Universal",
+    Center = true, 
+    AutoShow = true
+})
+
+local Tabs = {
+    Main = Window:AddTab("Main"),
+    ['UI Settings']= Window:AddTab("UI Settings")
+}
+
+--Tabs.Main:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nCredits to Exunys for the ESP.")
+-- settings
+local information = Tabs.Main:AddLeftGroupbox("Information")
+information:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nESP made by Exunys, WallFriend made by A1thernex.", true)
+local settings = Tabs.Main:AddLeftGroupbox("Settings")
+
+local mswitch = settings:AddToggle("mswit", {Text = "Master Switch", Tooltip = "Toggles the whole ESP.", Default = true})
+Toggles.mswit:OnChanged(function()
+    ExunysDeveloperESP.Settings.Enabled = Toggles.mswit.Value
+end)
+
+local tcheck = settings:AddToggle("tc", {Text = "Team Check", Tooltip = "Checks if the player isn't on your team.", Default = false})
+Toggles.tc:OnChanged(function()
+    ExunysDeveloperESP.Settings.TeamCheck = Toggles.tc.Value
+end)
+
+local acheck = settings:AddToggle("ac", {Text = "Alive Check", Tooltip = "Checks if the player is alive.", Default = false})
+Toggles.ac:OnChanged(function()
+    ExunysDeveloperESP.Settings.AliveCheck = Toggles.ac.Value
+end)
+
+local rainbowsp = settings:AddSlider("rsp", {
+        Text = "Rainbow Speed",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 10,
+        Rounding = 1,
+})
+
+Options.rsp:OnChanged(function()
+    ExunysDeveloperESP.DeveloperSettings.RainbowSpeed = Options.rsp.Value
+end)
+
+-- name
+local name = Tabs.Main:AddRightGroupbox("Name")
+
+local nametoggle = name:AddToggle("nt", {Text = "Display Names", Tooltip = "Displays names on the ESP.", Tooltip = "Toggles the names.", Default = true})
+Toggles.nt:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Enabled = Toggles.nt.Value
+end)
+
+local ndep = name:AddDependencyBox()
+
+local ntrainbow = ndep:AddToggle("ntr", {Text = "Rainbow Text", Tooltip = "Makes the name text rainbow.", Default = false})
+Toggles.ntr:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.RainbowColor = Toggles.ntr.Value
+end)
+
+local nameoffset = ndep:AddSlider("no", {
+        Text = "Text Offset",
+        --Description = "Changes the text offset.",
+        Default = 10,
+        Min = 1,
+        Max = 30,
+        Rounding = 1,
+})
+
+Options.no:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Offset = Options.no.Value
+end)
+
+local namecol = ndep:AddLabel("Text Color"):AddColorPicker("ncp", {
+    Title = "Text Color",
+    --Description = "Changes the text color.",
+    --Transparency = 1, -- transparency fucked up, 1 = visible, 0 = invisible
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.ncp:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Color = Options.ncp.Value
+    --ExunysDeveloperESP.Properties.ESP.Transparency = namecol.Transparency
+end)
+
+local ttrans = ndep:AddSlider("ttra", {
+        Text = "Text Transparency",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.ttra:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Transparency = Options.ttra.Value
+end)
+
+local nsize = ndep:AddSlider("ns", {
+        Text = "Text Size",
+        --Description = "Changes the text offset.",
+        Default = 13,
+        Min = 10,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.ns:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Size = Options.ns.Value
+end)
+
+local nfont = ndep:AddDropdown("nfo", {
+        Text = "Text Font",
+        Tooltip = "Changes the font of the text types.",
+        Values = {"UI", "System", "Monospace"},
+        Multi = false,
+        Default = 2,
+    })
+
+Options.nfo:OnChanged(function(Value)
+        if Value == "UI" then
+        ExunysDeveloperESP.Properties.ESP.Font = DrawingFonts.UI
+        elseif Value == "System" then
+        ExunysDeveloperESP.Properties.ESP.Font = DrawingFonts.System
+        --[[elseif Value == "Plex" then -- // system and plex are the same fonts
+        ExunysDeveloperESP.Properties.ESP.Font = DrawingFonts.Plex]]
+        elseif Value == "Monospace" then
+        ExunysDeveloperESP.Properties.ESP.Font = DrawingFonts.Monospace
+    end
+end)
+
+local dtext = ndep:AddDropdown("dte", {
+        Text = "Display Text",
+        Tooltip = "Displays selected text type on the ESP.",
+        Values = {"Distance", "Health", "Name", "Display Name", "Tool"},
+        Multi = true,
+        Default = {"Distance", "Name", "Tool"},
+    })
+
+Options.dte:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+        if string.find(table.concat(Values, ","), "Distance") then
+        ExunysDeveloperESP.Properties.ESP.DisplayDistance = true
+        else ExunysDeveloperESP.Properties.ESP.DisplayDistance = false
+        end
+        if string.find(table.concat(Values, ","), "Health") then
+        ExunysDeveloperESP.Properties.ESP.DisplayHealth = true
+        else ExunysDeveloperESP.Properties.ESP.DisplayHealth = false
+        end
+        if string.find(table.concat(Values, ","), "Name") then
+        ExunysDeveloperESP.Properties.ESP.DisplayName = true
+        else ExunysDeveloperESP.Properties.ESP.DisplayName = false
+        end
+        if string.find(table.concat(Values, ","), "Display Name") then
+        ExunysDeveloperESP.Properties.ESP.DisplayDisplayName = true
+        else ExunysDeveloperESP.Properties.ESP.DisplayDisplayName = false
+        end
+        if string.find(table.concat(Values, ","), "Tool") then
+        ExunysDeveloperESP.Properties.ESP.DisplayTool = true
+        else ExunysDeveloperESP.Properties.ESP.DisplayTool = false
+    end
+end)
+
+ndep:SetupDependencies({
+    {Toggles.nt, true}
+})
+
+local noutline = ndep:AddToggle("nout", {Text = "Display Name Outlines", Tooltip = "Toggles the name outline.", Default = true})
+Toggles.nout:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Outline = Toggles.nout.Value
+end)
+
+local nodep = ndep:AddDependencyBox()
+
+local outlinecol = nodep:AddLabel("Text Outline Color"):AddColorPicker("ocp", {
+    Title = "Text Outline Color",
+    --Description = "Changes the name outline color.",
+    Default = Color3.fromRGB(0, 0, 0)
+})
+    Options.ocp:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.OutlineColor = Options.ocp.Value
+end)
+
+local ntrainbowout = nodep:AddToggle("ntro", {Text = "Rainbow Outline", Tooltip = "Makes the name outline rainbow.", Default = false})
+Toggles.ntro:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.RainbowOutlineColor = Toggles.ntro.Value
+end)
+
+nodep:SetupDependencies({
+    {Toggles.nout, true}
+})
+
+-- box
+local box = Tabs.Main:AddLeftGroupbox("Box")
+
+local boxtoggle = box:AddToggle("bt", {Text = "Display Boxes", Tooltip = "Toggles the boxes.", Default = true})
+Toggles.bt:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.Enabled = Toggles.bt.Value
+end)
+
+local bdep = box:AddDependencyBox()
+
+local boxcol = bdep:AddLabel("Box Color"):AddColorPicker("bcp", {
+    Text = "Box Color",
+    --Description = "Changes the box color.",
+    --Transparency = 1, -- transparency fucked up, 1 = visible, 0 = invisible
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.bcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.Color = Options.bcp.Value
+    --ExunysDeveloperESP.Properties.Box.Transparency = boxcol.Transparency
+end)
+
+local boxtrans = bdep:AddSlider("boxtra", {
+        Text = "Box Transparency",
+        --Description = "Changes the text offset.",
+        Default = 0,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.boxtra:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Transparency = Options.boxtra.Value
+end)
+
+local brainbow = bdep:AddToggle("br", {Text = "Rainbow Box", Tooltip = "Makes the box rainbow.", Default = false})
+Toggles.br:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.RainbowColor = Toggles.br.Value
+end)
+
+local bthick = bdep:AddSlider("bth", {
+        Text = "Box Thickness",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.bth:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.Thickness = Options.bth.Value
+end)
+
+bdep:SetupDependencies({
+    {Toggles.bt, true}
+})
+
+local boutline = bdep:AddToggle("bout", {Text = "Display Box Outline", Tooltip = "Toggles the box outline.", Default = true})
+Toggles.bout:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.Outline = Toggles.bout.Value
+end)
+
+local bodep = bdep:AddDependencyBox()
+
+local boxoutlinecol = bodep:AddLabel("Box Outline Color"):AddColorPicker("bcp", {
+    Title = "Box Outline Color",
+    --Description = "Changes the box outline color.",
+    Default = Color3.fromRGB(0, 0, 0)
+})
+    Options.bcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.OutlineColor = boxoutlinecol.Value
+end)
+
+local brainbowout = bodep:AddToggle("bro", {Text = "Rainbow Outline", Tooltip = "Makes the box outline rainbow.", Default = false})
+Toggles.bro:OnChanged(function()
+    ExunysDeveloperESP.Properties.Box.RainbowOutlineColor = Toggles.bro.Value
+end)
+
+bodep:SetupDependencies({
+    {Toggles.bout, true}
+})
+
+-- health
+local health = Tabs.Main:AddLeftGroupbox("Health Bar")
+
+local hbartoggle = health:AddToggle("hbt", {Text = "Display Health Bar", Tooltip = "Toggles the health bar.", Default = true})
+Toggles.hbt:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Enabled = Toggles.hbt.Value
+end)
+
+local hdep = health:AddDependencyBox()
+
+local hbtrans = hdep:AddSlider("hbtra", {
+        Text = "Health Bar Transparency",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.hbtra:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Transparency = Options.hbtra.Value
+end)
+
+local hboffset = hdep:AddSlider("hbo", {
+        Text = "Health Bar Offset",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.hbo:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Offset = Options.hbo.Value
+end)
+
+local hbthick = hdep:AddSlider("hbth", {
+        Text = "Health Bar Thickness",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.hbth:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Thickness = Options.hbth.Value
+end)
+
+local hbpos = hdep:AddDropdown("hbp", {
+        Text = "Health Bar Position",
+        Tooltip = "Changes the position of the health bar.",
+        Values = {"Top", "Bottom", "Left", "Right"},
+        Multi = false,
+        Default = 3,
+    })
+
+hbpos:OnChanged(function(Value)
+        if Value == "Top" then
+        ExunysDeveloperESP.Properties.HealthBar.Position = 1
+        elseif Value == "Bottom" then
+        ExunysDeveloperESP.Properties.HealthBar.Position = 2
+        elseif Value == "Left" then
+        ExunysDeveloperESP.Properties.HealthBar.Position = 3
+        elseif Value == "Right" then
+        ExunysDeveloperESP.Properties.HealthBar.Position = 4
+    end
+end)
+
+hdep:SetupDependencies({
+    {Toggles.hbt, true}
+})
+
+local hboutline = hdep:AddToggle("hbout", {Text = "Display Health Bar Outline", Tooltip = "Toggles the health bar outline.", Default = true})
+Toggles.hbout:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Outline = Toggles.hbout.Value
+end)
+
+local hodep = hdep:AddDependencyBox()
+
+local hbaroutlinecol = hodep:AddLabel("Health Bar Outline Color"):AddColorPicker("hbcp", {
+    Title = "Health Bar Outline Color",
+    --Description = "Changes the health bar outline color.",
+    Default = Color3.fromRGB(0, 0, 0)
+})
+    Options.hbcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.OutlineColor = Options.hbcp.Value
+end)
+
+local hbrainbowout = hodep:AddToggle("hbro", {Text = "Rainbow Health Bar Outline", Tooltip = "Makes the health bar outline rainbow.", Default = false})
+Toggles.hbro:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.RainbowOutlineColor = Toggles.hbro.Value
+end)
+
+hodep:SetupDependencies({
+    {Toggles.hbout, true}
+})
+
+local headdot = Tabs.Main:AddRightGroupbox("Head Dot")
+
+local hdtoggle = headdot:AddToggle("hdt", {Text = "Display Head Dot", Tooltip = "Toggles the head dots.", Default = false})
+Toggles.hdt:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Enabled = Toggles.hdt.Value
+end)
+
+local hddep = headdot:AddDependencyBox()
+
+local hdcolor = hddep:AddLabel("Head Dot Color"):AddColorPicker("hdcp", {
+    Title = "Head Dot Color",
+    --Description = "Changes the health bar outline color.",
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.hdcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Color = Options.hdcp.Value
+end)
+
+local hdtrans = hddep:AddSlider("hdtra", {
+        Text = "Head Dot Transparency",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.hdtra:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Transparency = Options.hdtra.Value
+end)
+
+local hdrcolor = hddep:AddToggle("hdrc", {Text = "Rainbow Head Dot", Tooltip = "Makes the head dot rainbow.", Default = false})
+Toggles.hdrc:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.RainbowColor = Toggles.hdrc.Value
+end)
+
+local hdoffset = hddep:AddSlider("hdo", {
+        Text = "Head Dot Offset",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.hdo:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Offset = Options.hdo.Value
+end)
+
+local hdthick = hddep:AddSlider("hdth", {
+        Text = "Head Dot Thickness",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.hdth:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Thickness = Options.hdth.Value
+end)
+
+local hdsides = hddep:AddSlider("hds", {
+        Text = "Head Dot Sides",
+        --Description = "Changes the text offset.",
+        Default = 30,
+        Min = 1,
+        Max = 30,
+        Rounding = 1,
+})
+
+Options.hds:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.NumSides = Options.hds.Value
+end)
+
+local hdfill = hddep:AddToggle("hdf", {Text = "Fill Head Dot", Tooltip = "Fills the head dot.", Default = false})
+Toggles.hdf:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Filled = Toggles.hdf.Value
+end)
+
+local hdoutline = hddep:AddToggle("hdout", {Text = "Display Head Dot Outline", Tooltip = "Toggles the head dot outline.", Default = true})
+Toggles.hdout:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.Outline = Toggles.hdout.Value
+end)
+
+hddep:SetupDependencies({
+    {Toggles.hdt, true}
+})
+
+local hdodep = hddep:AddDependencyBox()
+
+local hdoutlinecol = hdodep:AddLabel("Head Dot Outline Color"):AddColorPicker("hdocp", {
+    Title = "Head Dot Outline Color",
+    --Description = "Changes the health bar outline color.",
+    Default = Color3.fromRGB(0, 0, 0)
+})
+    Options.hdocp:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.OutlineColor = Options.hdocp.Value
+end)
+
+local hdrout = hdodep:AddToggle("hdro", {Text = "Rainbow Head Dot Outline", Tooltip = "Makes the head dot outline rainbow.", Default = false})
+Toggles.hdro:OnChanged(function()
+    ExunysDeveloperESP.Properties.HeadDot.RainbowOutlineColor = Toggles.hdro.Value
+end)
+
+hdodep:SetupDependencies({
+    {Toggles.hdout, true}
+})
+
+local tracers = Tabs.Main:AddLeftGroupbox("Tracers")
+
+local trtoggle = tracers:AddToggle("dist", {Text = "Display Tracers", Tooltip = "Toggles the tracers.", Default = false})
+Toggles.dist:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.Enabled = Toggles.dist.Value
+end)
+
+local tdep = tracers:AddDependencyBox()
+
+local troutlinecol = tdep:AddLabel("Tracer Color"):AddColorPicker("tcp", {
+    Title = "Tracer Color",
+    --Description = "Changes the health bar outline color.",
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.tcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.Color = Options.tcp.Value
+end)
+
+local ttrans = tdep:AddSlider("ttra", {
+        Text = "Tracer Transparency",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.ttra:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.Transparency = Options.ttra.Value
+end)
+
+local ttrainbow = tdep:AddToggle("train", {Text = "Rainbow Tracer", Tooltip = "Makes the health bar outline rainbow.", Default = false})
+Toggles.train:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.RainbowColor = Toggles.train.Value
+end)
+
+local tthick = tdep:AddSlider("tth", {
+        Text = "Tracer Thickness",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.tth:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.Thickness = Options.tth.Value
+end)
+
+local tpos = tdep:AddDropdown("tp", {
+        Text = "Tracer Position",
+        Tooltip = "Changes the position of the tracer.",
+        Values = {"Bottom", "Center", "Mouse"},
+        Multi = false,
+        Default = 1,
+    })
+
+tpos:OnChanged(function(Value)
+        if Value == "Bottom" then
+        ExunysDeveloperESP.Properties.Tracer.Position = 1
+        elseif Value == "Center" then
+        ExunysDeveloperESP.Properties.Tracer.Position = 2
+        elseif Value == "Mouse" then
+        ExunysDeveloperESP.Properties.Tracer.Position = 3
+    end
+end)
+
+local toutline = tdep:AddToggle("tout", {Text = "Display Tracer Outline", Tooltip = "Toggles the tracer outline.", Default = true})
+Toggles.tout:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.Outline = Toggles.tout.Value
+end)
+
+tdep:SetupDependencies({
+    {Toggles.dist, true}
+})
+
+local todep = tdep:AddDependencyBox()
+
+local toutlinecol = todep:AddLabel("Tracer Outline Color"):AddColorPicker("tocp", {
+    Title = "Tracer Outline Color",
+    --Description = "Changes the health bar outline color.",
+    Default = Color3.fromRGB(0, 0, 0)
+})
+    Options.tocp:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.OutlineColor = Options.tocp.Value
+end)
+
+local trout = todep:AddToggle("tro", {Text = "Rainbow Tracer Outline", Tooltip = "Makes the tracer outline rainbow.", Default = false})
+Toggles.tro:OnChanged(function()
+    ExunysDeveloperESP.Properties.Tracer.RainbowOutlineColor = Toggles.tro.Value
+end)
+
+todep:SetupDependencies({
+    {Toggles.tout, true}
+})
+
+-- too many customization features for crosshair :sob:
+ExunysDeveloperESP.Properties.Crosshair.Enabled = false
+-- visit https://github.com/Exunys/Exunys-ESP and click on "The script's configurable settings"
+-- and edit or add more lines with the setting u want to customize 
+-- (e.g. path.Crosshair.Offset = number or path.Crosshair.CenterDot.Radius = number)
+
+lib.KeybindFrame.Visible = false;
+
+lib:OnUnload(function()
+    lib.Unloaded = true
+end)
+
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+
+MenuGroup:AddButton('Unload', function() lib:Unload() ExunysDeveloperESP:Exit() end)
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
+
+lib.ToggleKeybind = Options.MenuKeybind
+
+ThemeManager:SetLibrary(lib)
+SaveManager:SetLibrary(lib)
+
+SaveManager:IgnoreThemeSettings() 
+
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
+
+ThemeManager:SetFolder('MyScriptHub')
+SaveManager:SetFolder('MyScriptHub/specific-game')
+
+SaveManager:BuildConfigSection(Tabs['UI Settings']) 
+
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+ExunysDeveloperESP.Load()
