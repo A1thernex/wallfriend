@@ -279,8 +279,6 @@ cdep:SetupDependencies({
     {Toggles.ctog, true}
 })
 
-cdep:AddDivider()
-
 -- box
 local box = Tabs.Main:AddLeftGroupbox("Box")
 
