@@ -41,14 +41,14 @@ end)
 
 local teamdep = settings:AddDependencyBox()
 
-local teamcol = teamdep:AddLabel("Team Color"):AddColorPicker("tcp", {
+local teamcol = teamdep:AddLabel("Team Color"):AddColorPicker("tccp", {
     Title = "Team Color",
     --Description = "Changes the team color.",
     --Transparency = 1, -- transparency fucked up, 1 = visible, 0 = invisible
     Default = Color3.fromRGB(255, 255, 255)
 })
-    Options.tcp:OnChanged(function()
-    ExunysDeveloperESP.Settings.TeamColor = Options.tcp.Value
+    Options.tccp:OnChanged(function()
+    ExunysDeveloperESP.Settings.TeamColor = Options.tccp.Value
 end)
 
 teamdep:SetupDependencies({
