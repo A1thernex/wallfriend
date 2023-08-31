@@ -36,6 +36,27 @@ Toggles.tc:OnChanged(function()
     ExunysDeveloperESP.Settings.TeamCheck = Toggles.tc.Value
 end)
 
+local ctcol = settings:AddToggle("ctc", {Text = "Custom Team Color", Tooltip = "Toggles the option to have a custom team color.", Default = false})
+Toggles.ctc:OnChanged(function()
+    ExunysDeveloperESP.Settings.EnableTeamColors = Toggles.ctc.Value
+end)
+
+local teamdep = settings:AddDependencyBox()
+
+local teamcol = teamdep:AddLabel("Team Color"):AddColorPicker("tcp", {
+    Title = "Team Color",
+    --Description = "Changes the team color.",
+    --Transparency = 1, -- transparency fucked up, 1 = visible, 0 = invisible
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.tcp:OnChanged(function()
+    ExunysDeveloperESP.Settings.TeamColor = Options.tcp.Value
+end)
+
+teamdep:SetupDependencies({
+{Toggles.ctc, true}
+})
+
 local acheck = settings:AddToggle("ac", {Text = "Alive Check", Tooltip = "Checks if the player is alive.", Default = false})
 Toggles.ac:OnChanged(function()
     ExunysDeveloperESP.Settings.AliveCheck = Toggles.ac.Value
