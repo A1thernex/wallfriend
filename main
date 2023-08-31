@@ -22,8 +22,6 @@ local Tabs = {
 
 --Tabs.Main:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nCredits to Exunys for the ESP.")
 -- settings
-local information = Tabs.Main:AddLeftGroupbox("Information")
-information:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nESP made by Exunys, WallFriend made by A1thernex.", true)
 local settings = Tabs.Main:AddLeftGroupbox("Settings")
 
 local mswitch = settings:AddToggle("mswit", {Text = "Master Switch", Tooltip = "Toggles the whole ESP.", Default = true})
@@ -640,5 +638,8 @@ SaveManager:SetFolder('MyScriptHub/specific-game')
 SaveManager:BuildConfigSection(Tabs['UI Settings']) 
 
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+local information = Tabs['UI Settings']:AddLeftGroupbox("Information")
+information:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nESP made by Exunys, WallFriend made by A1thernex.", true)
 
 ExunysDeveloperESP.Load()
