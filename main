@@ -350,7 +350,7 @@ local boxoutlinecol = bodep:AddLabel("Box Outline Color"):AddColorPicker("bcp", 
     Default = Color3.fromRGB(0, 0, 0)
 })
     Options.bcp:OnChanged(function()
-    ExunysDeveloperESP.Properties.Box.OutlineColor = boxoutlinecol.Value
+    ExunysDeveloperESP.Properties.Box.OutlineColor = Options.bcp.Value
 end)
 
 local brainbowout = bodep:AddToggle("bro", {Text = "Rainbow Outline", Tooltip = "Makes the box outline rainbow.", Default = false})
