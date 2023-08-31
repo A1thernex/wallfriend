@@ -112,7 +112,7 @@ local namecol = ndep:AddLabel("Text Color"):AddColorPicker("ncp", {
     --ExunysDeveloperESP.Properties.ESP.Transparency = namecol.Transparency
 end)
 
-local ttrans = ndep:AddSlider("ttra", {
+local ttrans = ndep:AddSlider("nttra", {
         Text = "Text Transparency",
         --Description = "Changes the text offset.",
         Default = 1,
@@ -121,8 +121,8 @@ local ttrans = ndep:AddSlider("ttra", {
         Rounding = 1,
 })
 
-Options.ttra:OnChanged(function()
-    ExunysDeveloperESP.Properties.ESP.Transparency = Options.ttra.Value
+Options.nttra:OnChanged(function()
+    ExunysDeveloperESP.Properties.ESP.Transparency = Options.nttra.Value
 end)
 
 local nsize = ndep:AddSlider("ns", {
@@ -224,6 +224,63 @@ nodep:SetupDependencies({
     {Toggles.nout, true}
 })
 
+local chams = Tabs.Main:AddRightGroupbox("Chams (MIGHT BE BROKEN)")
+
+local chatoggle = chams:AddToggle("ctog", {Text = "Display Chams", Tooltip = "Toggles the chams.", Default = false})
+Toggles.ctog:OnChanged(function()
+    ExunysDeveloperESP.Properties.Chams.Enabled = Toggles.ctog.Value
+end)
+
+local cdep = chams:AddDependencyBox()
+
+local chcol = cdep:AddLabel("Chams Color"):AddColorPicker("chcp", {
+    Text = "Chams Color",
+    --Description = "Changes the box color.",
+    --Transparency = 1, -- transparency fucked up, 1 = visible, 0 = invisible
+    Default = Color3.fromRGB(255, 255, 255)
+})
+    Options.chcp:OnChanged(function()
+    ExunysDeveloperESP.Properties.Chams.Color = Options.chcp.Value
+    --ExunysDeveloperESP.Properties.Box.Transparency = boxcol.Transparency
+end)
+
+local chatrans = cdep:AddSlider("chatra", {
+        Text = "Chams Transparency",
+        --Description = "Changes the text offset.",
+        Default = 0.2,
+        Min = 0,
+        Max = 1,
+        Rounding = 1,
+})
+
+Options.chatra:OnChanged(function()
+    ExunysDeveloperESP.Properties.Chams.Transparency = Options.chatra.Value
+end)
+
+local crainbow = cdep:AddToggle("cr", {Text = "Rainbow Chams", Tooltip = "Makes the chams rainbow.", Default = false})
+Toggles.cr:OnChanged(function()
+    ExunysDeveloperESP.Properties.Chams.RainbowColor = Toggles.cr.Value
+end)
+
+local cthick = cdep:AddSlider("cth", {
+        Text = "Chams Thickness",
+        --Description = "Changes the text offset.",
+        Default = 1,
+        Min = 1,
+        Max = 50,
+        Rounding = 1,
+})
+
+Options.cth:OnChanged(function()
+    ExunysDeveloperESP.Properties.Chams.Thickness = Options.cth.Value
+end)
+
+cdep:SetupDependencies({
+    {Toggles.ctog, true}
+})
+
+cdep:AddDivider()
+
 -- box
 local box = Tabs.Main:AddLeftGroupbox("Box")
 
@@ -248,14 +305,14 @@ end)
 local boxtrans = bdep:AddSlider("boxtra", {
         Text = "Box Transparency",
         --Description = "Changes the text offset.",
-        Default = 0,
+        Default = 1,
         Min = 0,
         Max = 1,
         Rounding = 1,
 })
 
 Options.boxtra:OnChanged(function()
-    ExunysDeveloperESP.Properties.HeadDot.Transparency = Options.boxtra.Value
+    ExunysDeveloperESP.Properties.Box.Transparency = Options.boxtra.Value
 end)
 
 local brainbow = bdep:AddToggle("br", {Text = "Rainbow Box", Tooltip = "Makes the box rainbow.", Default = false})
@@ -354,6 +411,19 @@ local hbthick = hdep:AddSlider("hbth", {
 
 Options.hbth:OnChanged(function()
     ExunysDeveloperESP.Properties.HealthBar.Thickness = Options.hbth.Value
+end)
+
+local hbblue = hdep:AddSlider("hbb", {
+        Text = "Health Bar Blue",
+        --Description = "Changes the text offset.",
+        Default = 100,
+        Min = 1,
+        Max = 100,
+        Rounding = 1,
+})
+
+Options.hbb:OnChanged(function()
+    ExunysDeveloperESP.Properties.HealthBar.Blue = Options.hbb.Value
 end)
 
 local hbpos = hdep:AddDropdown("hbp", {
