@@ -197,6 +197,8 @@ ndep:SetupDependencies({
     {Toggles.nt, true}
 })
 
+ndep:AddDivider()
+
 local noutline = ndep:AddToggle("nout", {Text = "Display Name Outlines", Tooltip = "Toggles the name outline.", Default = true})
 Toggles.nout:OnChanged(function()
     ExunysDeveloperESP.Properties.ESP.Outline = Toggles.nout.Value
@@ -277,6 +279,8 @@ end)
 bdep:SetupDependencies({
     {Toggles.bt, true}
 })
+
+bdep:AddDivider()
 
 local boutline = bdep:AddToggle("bout", {Text = "Display Box Outline", Tooltip = "Toggles the box outline.", Default = true})
 Toggles.bout:OnChanged(function()
@@ -375,6 +379,8 @@ end)
 hdep:SetupDependencies({
     {Toggles.hbt, true}
 })
+
+hdep:AddDivider()
 
 local hboutline = hdep:AddToggle("hbout", {Text = "Display Health Bar Outline", Tooltip = "Toggles the health bar outline.", Default = true})
 Toggles.hbout:OnChanged(function()
@@ -481,6 +487,8 @@ Toggles.hdf:OnChanged(function()
     ExunysDeveloperESP.Properties.HeadDot.Filled = Toggles.hdf.Value
 end)
 
+hddep:AddDivider()
+
 local hdoutline = hddep:AddToggle("hdout", {Text = "Display Head Dot Outline", Tooltip = "Toggles the head dot outline.", Default = true})
 Toggles.hdout:OnChanged(function()
     ExunysDeveloperESP.Properties.HeadDot.Outline = Toggles.hdout.Value
@@ -577,6 +585,8 @@ tpos:OnChanged(function(Value)
     end
 end)
 
+tdep:AddDivider()
+
 local toutline = tdep:AddToggle("tout", {Text = "Display Tracer Outline", Tooltip = "Toggles the tracer outline.", Default = true})
 Toggles.tout:OnChanged(function()
     ExunysDeveloperESP.Properties.Tracer.Outline = Toggles.tout.Value
@@ -632,7 +642,7 @@ lib:OnUnload(function()
     lib.Unloaded = true
 end)
 
-local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+local MenuGroup = Tabs['UI Settings']:AddRightGroupbox('Menu')
 
 MenuGroup:AddButton('Unload', function() lib:Unload() ExunysDeveloperESP:Exit() end)
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
