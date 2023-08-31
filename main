@@ -639,7 +639,7 @@ SaveManager:BuildConfigSection(Tabs['UI Settings'])
 
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 
-local information = Tabs['UI Settings']:AddLeftGroupbox("Information")
+local information = Tabs['UI Settings']:AddRightGroupbox("Information")
 information:AddLabel("This is an example of how Exunys's ESP could be implemented into your own script.\nESP made by Exunys, WallFriend made by A1thernex.", true)
 
 ExunysDeveloperESP.Load()
