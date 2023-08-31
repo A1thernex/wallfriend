@@ -92,7 +92,7 @@ local nameoffset = ndep:AddSlider("no", {
         Text = "Text Offset",
         --Description = "Changes the text offset.",
         Default = 10,
-        Min = 1,
+        Min = 10,
         Max = 30,
         Rounding = 1,
 })
