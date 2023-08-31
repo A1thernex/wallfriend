@@ -411,19 +411,6 @@ Options.hbth:OnChanged(function()
     ExunysDeveloperESP.Properties.HealthBar.Thickness = Options.hbth.Value
 end)
 
-local hbblue = hdep:AddSlider("hbb", {
-        Text = "Health Bar Blue",
-        --Description = "Changes the text offset.",
-        Default = 100,
-        Min = 1,
-        Max = 100,
-        Rounding = 1,
-})
-
-Options.hbb:OnChanged(function()
-    ExunysDeveloperESP.Properties.HealthBar.Blue = Options.hbb.Value
-end)
-
 local hbpos = hdep:AddDropdown("hbp", {
         Text = "Health Bar Position",
         Tooltip = "Changes the position of the health bar.",
